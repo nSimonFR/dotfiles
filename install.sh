@@ -1,7 +1,7 @@
 #!/bin/sh
 # Updated by nSimon
 
-dot_list="bashrc config emacs gitconfig gitignore mozilla vimperatorrc tmux.conf msmtprc muttrc slrnrc ssh vimrc Xdefaults zshrc"
+dot_list="bashrc config emacs gitconfig gitignore mozilla msmtprc muttrc slrnrc ssh tmux.conf vimperatorrc vimrc Xdefaults zshrc"
 
 for f in $dot_list; do
   rm -rf "$HOME/.$f"
