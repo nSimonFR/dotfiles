@@ -1,21 +1,11 @@
-[core]
-	excludesfile = ~/.gitignore
+[user]
+	email = nicolas1.simon@epita.fr
+	name = Nicolas Simon
+[help]
+	autocorrect = 15
 [color]
-	ui = auto
-	branch = auto
-	diff = auto
-	interactive = auto
-	status = auto
-[commit]
-	verbose = true
-[pull]
-	rebase = true
-[branch]
-	autosetuprebase = always
+	ui = true
 [push]
 	default = simple
-[sendemail]
-	smtpencryption = tls
-	smtpserver = smtp.office365.com
-	smtpserverport = 587
-	smtpuser = firstname.lastname@epita.fr
+[core]
+	autocrlf = false

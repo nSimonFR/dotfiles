@@ -1,0 +1,14 @@
+Host bitbucket.org, github.com
+  User neavend
+  IdentityFile ~/.ssh/neavend_key
+
+Host cri, git.cri.epita.net
+  HostName git.cri.epita.net
+  User git
+  IdentityFile ~/.ssh/neavend_key
+
+Host dev.nsimon.fr, nsimon.fr
+  HostName dev.nsimon.fr
+  Port 26
+  User neavend
+  IdentityFile ~/.ssh/neavend_key
