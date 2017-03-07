@@ -1,7 +1,7 @@
 #!/bin/sh
 # Updated by nSimon
 
-DIR=$(dirname `which $0`)
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [ -d "/afs" ]; then
   rmdir "$HOME/Desktop" 2>> /dev/null
