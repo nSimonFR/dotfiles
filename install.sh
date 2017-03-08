@@ -8,7 +8,7 @@ if [ -d "/afs" ]; then
   ln -s "$AFS_DIR/Downloads" "$HOME/Downloads"
 fi
 
-dot_list="bashrc config emacs gitconfig gitignore mozilla msmtprc muttrc slrnrc ssh tmux.conf vimperatorrc vimrc Xdefaults zshrc"
+dot_list="bashrc config emacs gitconfig gitignore hyper.js mozilla msmtprc muttrc slrnrc ssh tmux.conf vimperatorrc vimrc Xdefaults zshrc"
 
 for f in $dot_list; do
   rm -rf "$HOME/.$f"
