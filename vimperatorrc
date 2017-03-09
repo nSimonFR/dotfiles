@@ -56,6 +56,12 @@ noremap <C-n> :tabmove! +1<CR>
 noremap p <Nop>
 noremap <C-k> <Nop>
 
+" colorscheme
+colorscheme fxdevtools-dark
+
+" enable application controls (play/pause)
+set passthrough
+
 " Hide Nav-Bar with <F2>
 map <silent> <F2> :js toggle_navbar()<CR>
 :js << EOF

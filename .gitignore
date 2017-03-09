@@ -1,4 +1,3 @@
 config/nvim/undodir/
-ssh/neavend_key*
 config/nvim/.netrwhist
-ssh/known_hosts
+ssh/
