@@ -15,8 +15,6 @@ module.exports = {
     windowPosition: [150, 100],
     windowSize: [1000, 600],
   },
-
   plugins: [],
-
   localPlugins: []
 };

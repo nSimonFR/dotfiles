@@ -1,3 +1,62 @@
+" .vimperatorrc
+" nSimon <nsimon@protonmail.com>
+
+" title bar
+set titlestring="Firefox with Vimperator"
+
+" default search/suggest engine:
+set defsearch=google
+set suggestengines=google
+
+" completion priority in :[tab]open
+" bookmarks, suggestions, awesome bar
+set complete=bSl
+
+" scroll height of <C-d> / <C-u>
+set scroll=3
+
+" all type pages are opened in new tab
+" addons + downloads + help + javascript + prefs
+set newtab=all
+
+" display tab-bar anytime
+set! browser.tabs.autoHide=false
+
+" don't animate tab-bar when switch to fullscreen
+set! browser.fullscreen.animateUp=0
+
+" hide close buttons
+set! browser.tabs.closeButtons=2
+
+" don't resize when open images
+set! browser.enabel_automatic_image_resizing=false
+
+" the number of URL-completions is 20
+set! browser.urlbar.maxRichResults=20
+
+" the number of popups is 100
+set! dom.popup_maximum=100
+
+" activate spell-check textarea/input
+set! layout.spellcheckDefault=2
+
+" don't select trailing spaces, when select words.
+set! layout.word_select.eat_space_to_next_word=false
+
+" don't show download-manager
+set! browser.download.manager.showWhenStarting=false
+
+" tab operation
+noremap <C-h> gT
+noremap <C-l> gt
+noremap <C-p> :tabmove! -1<CR>
+noremap <C-n> :tabmove! +1<CR>
+
+" Disable fuckups
+noremap p <Nop>
+noremap <C-k> <Nop>
+
+" Hide Nav-Bar with <F2>
 map <silent> <F2> :js toggle_navbar()<CR>
 :js << EOF
 function toggle_navbar() {
