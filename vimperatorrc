@@ -4,13 +4,19 @@
 " title bar
 set titlestring="Firefox with Vimperator"
 
+" 
+
+
+" Don't beep
+set noerrorbells
+
 " default search/suggest engine:
 set defsearch=google
 set suggestengines=google
 
 " completion priority in :[tab]open
 " bookmarks, suggestions, awesome bar
-set complete=bSl
+set complete=blS
 
 " scroll height of <C-d> / <C-u>
 set scroll=3
@@ -51,6 +57,12 @@ noremap <C-h> gT
 noremap <C-l> gt
 noremap <C-p> :tabmove! -1<CR>
 noremap <C-n> :tabmove! +1<CR>
+
+" twice as fast navigation
+nnoremap j 2j
+nnoremap k 2k
+nnoremap h 2h
+nnoremap l 2l
 
 " Disable fuckups
 noremap p <Nop>
