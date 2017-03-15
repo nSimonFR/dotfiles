@@ -4,9 +4,6 @@
 " title bar
 set titlestring="Firefox with Vimperator"
 
-" 
-
-
 " Don't beep
 set noerrorbells
 
@@ -16,7 +13,7 @@ set suggestengines=google
 
 " completion priority in :[tab]open
 " bookmarks, suggestions, awesome bar
-set complete=blS
+set complete=Sl
 
 " scroll height of <C-d> / <C-u>
 set scroll=3
