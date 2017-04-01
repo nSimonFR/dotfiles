@@ -42,9 +42,13 @@ set t_Co=256
 set noswapfile
 set list listchars=tab:»·,trail:·
 set cc=80
-set ts=4
-set sw=4
-set noexpandtab
+set ts=2
+set sw=2
+set expandtab
+set cindent
+set ruler
+set number
 set mouse=""
+set colorcolumn=80
 
 set pastetoggle=<F2>
