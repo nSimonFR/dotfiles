@@ -31,9 +31,13 @@ function CenterPane()
 	exec 'vertical resize '. string(&columns * 0.75)
 endfunction
 
-function FixSpaces()
-	:%s/\s\+$//e
-endfunction
+fun! CleanExtraSpaces()
+	let save_cursor = getpos(".")
+	let old_query = getreg('/')
+	silent! %s/\s\+$//e
+	call setpos('.', save_cursor)
+	call setreg('/', old_query)
+endfun
 
 function Cursor()
 	undo
@@ -44,6 +48,7 @@ endfunction
 autocmd VimEnter * call Cursor()
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
 " set
 if has("persistent_undo")
@@ -67,6 +72,8 @@ set ruler
 set number
 set mouse=""
 set colorcolumn=80
+set noerrorbells
 set visualbell
-
+set wildmenu
+set wildmode=longest:full,full
 set pastetoggle=<F2>
