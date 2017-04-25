@@ -1,4 +1,7 @@
-export PATH=/opt/anaconda/bin:$PATH 
+export DISPLAY=:0
+bootstrap.sh &>> /dev/null
+
+export PATH=/opt/anaconda/bin:$PATH
 
 source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -26,8 +29,14 @@ mv() {
 	fi
 }
 
+loki() {
+	ssh loki -t "tmux a -t ${1:-'0'} || tmux new -s ${1:-'0'} 'env ZDOTDIR=/etc/zsh zsh'"
+}
+
 alias v="nvim"
 alias tmux="tmux -2"
 alias jupy="ssh -L 127.0.0.1:8888:127.0.0.1:8888 nsimon -t -x \"tmux a -t jupyter || tmux new -s jupyter 'jupyter-notebook'\""
 alias pipupdate="su -c \"pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U \" "
 alias sudo="sup"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

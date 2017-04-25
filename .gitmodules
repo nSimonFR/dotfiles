@@ -4,6 +4,18 @@
 [submodule "config/zsh/zsh-autosuggestions"]
 	path = config/zsh/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "config/nvim/bundle/nerdtree"]
+	path = config/nvim/bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule "config/nvim/bundle/vim-gitgutter"]
+	path = config/nvim/bundle/vim-gitgutter
+	url = https://github.com/airblade/vim-gitgutter.git
+[submodule "config/nvim/bundle/vim-surround"]
+	path = config/nvim/bundle/vim-surround
+	url = https://github.com/tpope/vim-surround.git
+[submodule "config/nvim/bundle/vim-sensible"]
+	path = config/nvim/bundle/vim-sensible
+	url = git://github.com/tpope/vim-sensible.git
 [submodule "config/nvim/bundle/Vundle.vim"]
 	path = config/nvim/bundle/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim.git
+	url = https://github.com/VundleVim/Vundle.vim
