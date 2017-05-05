@@ -1,7 +1,9 @@
 export DISPLAY=:0
 bootstrap.sh &>> /dev/null
 
+export GOPATH=$HOME/.go
 export PATH=/opt/anaconda/bin:$PATH
+export GTK2_RC_FILES=~/.themes/Radiations/gtk-2.0/gtkrc
 
 source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
