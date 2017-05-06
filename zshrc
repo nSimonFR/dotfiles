@@ -55,8 +55,21 @@ loki() {
 	ssh loki -t "tmux a -t ${1:-'0'} || tmux new -s ${1:-'0'} 'env ZDOTDIR=/etc/zsh zsh'"
 }
 
+g() {
+	if [ $# -eq 0 ]; then
+		git status
+	elif [ $1 = "clone" ]; then
+		URL=`echo "$2" | sed "s/http.*:\/\/github.com\/\(.*\)/git@github.com:\1/g"`
+		echo "Cloning $URL"
+		git clone "$URL" $3
+	else
+		git $*
+	fi
+}
+
 alias v="nvim"
 alias tmux="tmux -2"
+alias git="g "
+alias sudo="sup"
 alias jupy="ssh -L 127.0.0.1:8888:127.0.0.1:8888 nsimon -t -x \"tmux a -t jupyter || tmux new -s jupyter 'jupyter-notebook'\""
 alias pipupdate="su -c \"pip freeze --local | grep -v '^\-e' | cut -d = -f 1	| xargs -n1 pip install -U \" "
-alias sudo="sup"
