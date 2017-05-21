@@ -8,6 +8,7 @@ export GTK2_RC_FILES=~/.themes/Radiations/gtk-2.0/gtkrc
 source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.config/zsh/prompt.zsh
+source ~/.config/zsh/z.sh
 
 sup() {
 	su -c "$*"
