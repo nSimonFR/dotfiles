@@ -9,3 +9,5 @@
 	default = simple
 [core]
 	autocrlf = false
+[diff]
+	tool = vimdiff
