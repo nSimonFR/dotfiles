@@ -4,3 +4,4 @@
 c = get_config()
 
 c.NotebookApp.open_browser = False
+c.NotebookApp.allow_root = True
