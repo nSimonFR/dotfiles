@@ -67,6 +67,7 @@ set sw=2
 set expandtab
 set cindent
 set ruler
+set relativenumber
 set number
 set mouse=""
 set colorcolumn=80
