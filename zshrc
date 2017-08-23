@@ -1,9 +1,7 @@
-export DISPLAY=:0
-bootstrap.sh &>> /dev/null
-
 export GOPATH=$HOME/.go
-export PATH=/opt/anaconda/bin:$PATH
+export PATH=$HOME/.meteor:/usr/bin/core_perl:~/.go/bin:$PATH
 export GTK2_RC_FILES=~/.themes/Radiations/gtk-2.0/gtkrc
+export XDG_CONFIG_HOME=~/.config/
 
 source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -68,9 +66,18 @@ g() {
 	fi
 }
 
+clip() {
+	echo $* | xclip -selection clipboard
+}
+
+retry() {
+  until $*; do
+    sleep 1
+  done
+}
+
 alias v="nvim"
 alias tmux="tmux -2"
 alias git="g "
-alias sudo="sup"
 alias jupy="ssh -L 127.0.0.1:8888:127.0.0.1:8888 nsimon -t -x \"tmux a -t jupyter || tmux new -s jupyter 'jupyter-notebook'\""
 alias pipupdate="su -c \"pip freeze --local | grep -v '^\-e' | cut -d = -f 1	| xargs -n1 pip install -U \" "

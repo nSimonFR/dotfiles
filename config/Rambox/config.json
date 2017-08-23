@@ -1,0 +1,22 @@
+{
+	"always_on_top": false,
+	"hide_menu_bar": false,
+	"window_display_behavior": "show_taskbar",
+	"auto_launch": true,
+	"window_close_behavior": "quit",
+	"start_minimized": false,
+	"systemtray_indicator": false,
+	"master_password": false,
+	"disable_gpu": false,
+	"proxy": false,
+	"proxyHost": "",
+	"proxyPort": null,
+	"locale": "en",
+	"x": 0,
+	"y": 0,
+	"width": 1920,
+	"height": 1059,
+	"maximized": false,
+	"master_password1": "",
+	"master_password2": ""
+}

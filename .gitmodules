@@ -19,3 +19,6 @@
 [submodule "config/nvim/bundle/Vundle.vim"]
 	path = config/nvim/bundle/Vundle.vim
 	url = https://github.com/VundleVim/Vundle.vim
+[submodule "config/Franz/Plugins"]
+	path = config/Franz/Plugins
+	url = https://github.com/meetfranz/plugins
