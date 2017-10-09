@@ -1,6 +1,7 @@
 [user]
 	email = nicolas1.simon@epita.fr
 	name = Nicolas Simon
+	signingkey = A6E803221BCA0680
 [help]
 	autocorrect = 15
 [color]
@@ -11,3 +12,5 @@
 	autocrlf = false
 [diff]
 	tool = vimdiff
+[commit]
+	gpgsign = false

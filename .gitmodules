@@ -22,3 +22,9 @@
 [submodule "config/Franz/Plugins"]
 	path = config/Franz/Plugins
 	url = https://github.com/meetfranz/plugins
+[submodule "config/nvim/bundle/dash.vim"]
+	path = config/nvim/bundle/dash.vim
+	url = https://github.com/rizzatti/dash.vim.git
+[submodule "config/nvim/bundle/vim-javascript"]
+	path = config/nvim/bundle/vim-javascript
+	url = https://github.com/pangloss/vim-javascript.git

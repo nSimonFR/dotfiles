@@ -1,7 +1,10 @@
-export GOPATH=$HOME/.go
-export PATH=$HOME/.meteor:/usr/bin/core_perl:~/.go/bin:$PATH
 export GTK2_RC_FILES=~/.themes/Radiations/gtk-2.0/gtkrc
 export XDG_CONFIG_HOME=~/.config/
+export HISTORY_IGNORE='*((eWz)|(Fok))*' # Ignore 09 cfg files
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$HOME/.meteor:/usr/bin/core_perl:~/.go/bin
+export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+export GOPATH=$HOME/.go
 
 source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -17,7 +20,8 @@ random_file() {
 }
 
 cd() {
-	builtin cd "$@" && ls
+	builtin cd "$@"
+	if [ `ls -l | wc -l` -lt 20 ]; then ls; fi;
 }
 
 mv() {

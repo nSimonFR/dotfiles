@@ -10,6 +10,8 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-sensible'
+Plugin 'rizzatti/dash.vim'
+Plugin 'pangloss/vim-javascript'
 call vundle#end()
 filetype plugin indent on
 
@@ -31,7 +33,7 @@ function CenterPane()
 	exec 'vertical resize '. string(&columns * 0.75)
 endfunction
 
-fun! CleanExtraSpaces()
+fun! FixSpaces()
 	let save_cursor = getpos(".")
 	let old_query = getreg('/')
 	silent! %s/\s\+$//e
@@ -42,7 +44,7 @@ endfun
 " Autocmd
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+autocmd BufWritePre *.c,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call FixSpaces()
 
 if has("autocmd")
 	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
@@ -69,10 +71,12 @@ set cindent
 set ruler
 set relativenumber
 set number
-set mouse=""
+set mouse=a
 set colorcolumn=80
 set noerrorbells
 set visualbell
 set wildmenu
 set wildmode=longest:full,full
 set pastetoggle=<F2>
+set langmenu=en_US
+let $LANG = 'en_US'
