@@ -12,6 +12,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-sensible'
 Plugin 'rizzatti/dash.vim'
 Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
 call vundle#end()
 filetype plugin indent on
 
@@ -79,4 +80,7 @@ set wildmenu
 set wildmode=longest:full,full
 set pastetoggle=<F2>
 set langmenu=en_US
+set clipboard=unnamed
+
+let g:jsx_ext_required = 0
 let $LANG = 'en_US'

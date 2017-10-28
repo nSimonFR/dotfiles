@@ -1,6 +1,5 @@
 export GTK2_RC_FILES=~/.themes/Radiations/gtk-2.0/gtkrc
 export XDG_CONFIG_HOME=~/.config/
-export HISTORY_IGNORE='*((eWz)|(Fok))*' # Ignore 09 cfg files
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$HOME/.meteor:/usr/bin/core_perl:~/.go/bin
 export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
@@ -85,3 +84,5 @@ alias tmux="tmux -2"
 alias git="g "
 alias jupy="ssh -L 127.0.0.1:8888:127.0.0.1:8888 nsimon -t -x \"tmux a -t jupyter || tmux new -s jupyter 'jupyter-notebook'\""
 alias pipupdate="su -c \"pip freeze --local | grep -v '^\-e' | cut -d = -f 1	| xargs -n1 pip install -U \" "
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
