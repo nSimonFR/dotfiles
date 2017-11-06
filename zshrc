@@ -1,6 +1,7 @@
 export GTK2_RC_FILES=~/.themes/Radiations/gtk-2.0/gtkrc
 export XDG_CONFIG_HOME=~/.config/
 export ANDROID_HOME=$HOME/Library/Android/sdk
+export REACT_DEBUGGER="open -g 'rndebugger://set-debugger-loc?port=8081'"
 export PATH=$PATH:$HOME/.meteor:/usr/bin/core_perl:~/.go/bin
 export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 export GOPATH=$HOME/.go
@@ -9,6 +10,13 @@ source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.config/zsh/prompt.zsh
 source ~/.config/zsh/z.sh
+source ~/.config/zsh/zsh-history-substring-search.zsh
+
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
 
 sup() {
 	su -c "$*"

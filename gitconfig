@@ -14,3 +14,7 @@
 	tool = vimdiff
 [commit]
 	gpgsign = false
+[difftool]
+	prompt = false
+[alias]
+	d = difftool
