@@ -1,46 +1,22 @@
-export GTK2_RC_FILES=~/.themes/Radiations/gtk-2.0/gtkrc
-export XDG_CONFIG_HOME=~/.config/
+# Environment variables
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 export ANDROID_HOME=$HOME/Library/Android/sdk
-export REACT_DEBUGGER="open -g 'rndebugger://set-debugger-loc?port=8081'"
-export PATH=$PATH:$HOME/.meteor:/usr/bin/core_perl:~/.go/bin
-export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
-export GOPATH=$HOME/.go
+export PATH=/usr/local/opt/python/libexec/bin:$PATH
+export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 
-source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.config/zsh/prompt.zsh
-source ~/.config/zsh/z.sh
-source ~/.config/zsh/zsh-history-substring-search.zsh
+#bindkey "$terminfo[kcuu1]" history-substring-search-up
+#bindkey "$terminfo[kcud1]" history-substring-search-down
+#bindkey -M vicmd 'k' history-substring-search-up
+#bindkey -M vicmd 'j' history-substring-search-down
 
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-
-
+# Functions
 sup() {
 	su -c "$*"
 }
-
 random_file() {
 	find ${*:-.} -type f | shuf | head -n 1
 }
-
-cd() {
-	builtin cd "$@"
-	if [ `ls -l | wc -l` -lt 20 ]; then ls; fi;
-}
-
-mv() {
-	if git rev-parse --is-inside-work-tree &>/dev/null; then
-		if ! git mv $* 2> /dev/null; then
-			/bin/mv $*
-		fi
-	else
-		/bin/mv $*
-	fi
-}
-
 extract () {
 	if [ -f $1 ] ; then
 		case $1 in
@@ -60,37 +36,27 @@ extract () {
 		echo "'$1' is not a valid file"
 	fi
 }
-
-loki() {
-	ssh loki -t "tmux a -t ${1:-'0'} || tmux new -s ${1:-'0'} 'env ZDOTDIR=/etc/zsh zsh'"
-}
-
 g() {
 	if [ $# -eq 0 ]; then
 		git status
-	elif [ $1 = "clone" ]; then
-		URL=`echo "$2" | sed "s/http.*:\/\/github.com\/\(.*\)/git@github.com:\1/g"`
-		echo "Cloning $URL"
-		git clone "$URL" $3
 	else
 		git $*
 	fi
 }
-
 clip() {
 	echo $* | xclip -selection clipboard
 }
-
 retry() {
-  until $*; do
-    sleep 1
-  done
+	until $*; do
+		sleep 1
+	done
 }
 
-alias v="nvim"
+# Aliases
+alias v="vim"
 alias tmux="tmux -2"
-alias git="g "
-alias jupy="ssh -L 127.0.0.1:8888:127.0.0.1:8888 nsimon -t -x \"tmux a -t jupyter || tmux new -s jupyter 'jupyter-notebook'\""
 alias pipupdate="su -c \"pip freeze --local | grep -v '^\-e' | cut -d = -f 1	| xargs -n1 pip install -U \" "
 
+# External scripts and configurations
+source ~/.config/zsh/plugins.zsh
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

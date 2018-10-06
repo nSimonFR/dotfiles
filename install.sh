@@ -14,3 +14,6 @@ for f in $dot_list; do
   rm -rf "$HOME/.$f"
   ln -s "$DIR/$f" "$HOME/.$f"
 done
+
+mkdir -p ~/.config/zsh/zfunctions/
+ln -s ~/.config/zsh/spaceship-prompt/spaceship.zsh ~/.config/zsh/zfunctions/prompt_spaceship_setup

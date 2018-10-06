@@ -72,7 +72,7 @@ set cindent
 set ruler
 set relativenumber
 set number
-set mouse=a
+set mouse=""
 set colorcolumn=80
 set noerrorbells
 set visualbell
