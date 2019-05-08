@@ -52,13 +52,10 @@ if has("autocmd")
 		\| exe "normal! g'\"" | endif
 endif
 
-if has("persistent_undo")
-	set undodir=~/.config/nvim/undodir/
-	set undofile
-endif
-
 syntax on
 colorscheme molokai
+set undodir=~/.config/nvim/undodir/
+set undofile
 set background=dark
 set encoding=utf-8
 set t_Co=256
