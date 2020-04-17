@@ -1,13 +1,13 @@
 [user]
 	email = contact@nsimon.fr
 	name = Nicolas Simon
-	signingkey = A6E803221BCA0680
+	signingkey = FDA7E6C61C9EA664
 [help]
 	autocorrect = 15
 [color]
 	ui = true
 [push]
-	default = simple
+	default = current
 [core]
 	autocrlf = false
 [diff]
@@ -16,3 +16,7 @@
 	prompt = false
 [alias]
 	d = difftool
+[sequence]
+	editor = rebase-editor
+[commit]
+	gpgsign = true
