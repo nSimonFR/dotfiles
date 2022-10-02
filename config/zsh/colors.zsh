@@ -16,4 +16,3 @@ export PR_BOLD_WHITE PR_BOLD_BLACK
 unset LSCOLORS
 export CLICOLOR=1
 export LS_COLORS=exfxcxdxbxegedabagacad
-alias ls='ls --color=auto'
