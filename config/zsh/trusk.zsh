@@ -1,6 +1,15 @@
 # TODO Switch with yours
 SED=gsed
 
+function greset() {
+  BRANCH="develop"
+  if [ ! `git branch --list $BRANCH` ]; then
+    BRANCH="master"
+  fi
+
+  git checkout $BRANCH && git fetch && git rebase origin/$BRANCH
+}
+
 function get-version() {
   if [ $# -eq 0 ]
     then base=.
@@ -21,6 +30,109 @@ function reset_branches() {
 
 LINEAR_ISSUES=/tmp/linear_issues #TODO
 
+function _package_submodule() {
+  # Automatic repo release and tag, respecting gitflow + trusk patterns.
+
+  # Requires:
+  # - cg (https://www.npmjs.com/package/corgit)
+  # - gh (https://github.com/cli/cli)
+
+  VER=`get-version`
+  git add package* CHANGELOG.md
+  git stash save -q "psub $VER"
+  if [ ! `git branch --list release/$VER` ]; then
+    git checkout -q -b release/$VER develop && \
+    git stash pop -q && \
+    git add package* CHANGELOG.md && \
+    git commit -q -m "Feature(Version): bump to $VER" --no-verify >/dev/null
+  else
+    git stash drop -q && \
+    git checkout release/$VER >/dev/null && \
+    git rebase -q origin/develop >/dev/null 2>/dev/null
+  fi
+  git push --no-progress -q -u origin >/dev/null 2>/dev/null && gh pr create -a @me -B master -t $(git rev-parse --abbrev-ref HEAD) -b '' --draft >/dev/null 2>/dev/null
+  IMAGE=`basename $DIR`
+  VERSION=`git rev-parse --abbrev-ref HEAD | $SED "s/[^a-z0-9_]/-/ig"`
+  (
+    cd .. && \
+    $SED -i -E "s/$IMAGE(.*):develop/$IMAGE\1:$VERSION/g" docker-compose.fr.staging.yml && \
+    git add $IMAGE docker-compose.*
+  )
+  gh pr list --state merged --json url -q '.[].url' | xargs linear_move "Acceptance Test" "Release Candidate"
+}
+
+function package_submodule() {
+  reset_branches && touch CHANGELOG.md && cg bump >/dev/null && _package_submodule
+}
+
+function make_release() {
+  # Automatic release_candidate creation
+  # Only-run while being in a monorepo (not a submodule)
+
+  # Optional command (Will prevent husky warnings):
+  # git submodule -q foreach 'npm install --silent && git restore -q package-lock.json'
+  setopt LOCAL_OPTIONS NO_NOTIFY
+
+  if [[ $(git rev-parse --abbrev-ref HEAD) != *"release"* ]]; then
+    reset_branches
+    CURRENT_VER=$(git describe --tags --abbrev=0)
+    read "VER?New version for $(basename $(pwd)) (current: $CURRENT_VER) ? "
+    git checkout -b release/$VER
+    npm version -no-git-tag-version $VER >/dev/null
+    git add package*
+    git commit -m "Feature(Version): bump version to $VER" --no-verify
+  else
+    VER=$(git rev-parse --abbrev-ref HEAD | cut -d '/' -f2)
+  fi
+
+  LINEAR_ISSUES=$(mktemp)
+  echo "Linear moved issue:" > $LINEAR_ISSUES
+
+  for DIR in $(git submodule -q foreach -q sh -c pwd); do
+  (
+    cd $DIR
+    git checkout -q develop 2>/dev/null
+    git fetch -q
+    if ! git rebase -q origin/develop 2>/dev/null; then
+      echo "$(basename $DIR) - ERROR: no action done (Local changes ?)"
+    elif ! git show -q --summary HEAD | grep -q ^Merge; then
+      touch CHANGELOG.md
+      if ! cg bump >/dev/null; then
+        echo "$(basename $DIR) - ERROR: no action done (Local changes ?)"
+      else
+        VER=`get-version`
+        echo "`basename $DIR`:"
+        gh pr list --state merged --json url -q '.[].url' | xargs linear_list "Acceptance Test" "Release Candidate"
+        read -q "REPLY?Bump to $VER? (Y/y) "
+        echo ""
+
+        if [[ "$REPLY" = "Y" ]] || [[ "$REPLY" = "y" ]]; then
+          _package_submodule >> $LINEAR_ISSUES
+          exit
+        else
+          git restore .
+        fi
+      fi
+    fi
+    # Else, apply production version
+    IMAGE=`echo $DIR | rev | cut -d "/" -f 1 | rev`
+    VERSION=`cat ../docker-compose.fr.production.yml | grep "/.*$IMAGE.*:" | cut -d: -f3 | head -n 1`
+    echo $IMAGE:$VERSION
+    $SED -i -E "s/$IMAGE(.*):develop/$IMAGE\1:$VERSION/g" ../docker-compose.fr.staging.yml
+  )
+  done
+
+  git add docker-compose.*
+  git commit -m "Feature(Submodule): make_release script" --no-verify
+
+  git push --no-progress -q -u origin >/dev/null 2>/dev/null
+  gh pr create -a @me -B master -t $(git rev-parse --abbrev-ref HEAD) -b '' --draft 2>/dev/null
+
+  #submodule_states
+  cat $LINEAR_ISSUES
+  rm $LINEAR_ISSUES
+}
+
 function validate_release() {
   setopt LOCAL_OPTIONS NO_NOTIFY
 
@@ -36,18 +148,23 @@ function validate_release() {
   fi
 
   if [[ -f "docker-compose.fr.staging.yml" ]]; then
-    VERSIONS=$(cat docker-compose.fr.staging.yml | grep release | $SED 's/^.*\/\(.*\):\(.*\)$/\1 \2/g')
-    echo $VERSIONS | while read line; do
+    IMAGES=$(cat docker-compose.fr.staging.yml | grep release | $SED 's/^.*\/\(.*\):.*$/\1/g')
+    echo $IMAGES | while read IMAGE; do
     (
-      submodule=$(echo $line | cut -d' ' -f1 | $SED 's/-2//' ) && \
-      version=$(echo $line | cut -d' ' -f2 | $SED 's/-.*//') && \
-      cd $submodule && \
+      cd $IMAGE && \
       git fetch && \
-      gb $version >/dev/null && \
+      gb release >/dev/null && \
       validate_release && \
-      minfra
+      reset_branches && \
+      VER=`get-version` && \
+      git checkout -q master && \
+      $SED -i -E "s/$IMAGE(.*):[0-9]+(\.[0-9]+){2}/$IMAGE\1:$VER/g" ../docker-compose.fr.production.yml && \
+      (cd .. && git add $IMAGE) || exit 1
     )
     done
+    $SED -i -E "s/trusk-production\/(.*):..*/trusk-production\/\1:develop/g" docker-compose.fr.staging.yml && \
+    git add $IMAGE docker-compose.* && \
+    git commit -m "Feature(Submodule): validate_release script" --no-verify
   fi
 
   echo "Bumping $(basename $(pwd)) to $VER"
@@ -61,102 +178,11 @@ function validate_release() {
   git branch -q -D release/$VER && \
   git push -q origin develop master --tags >/dev/null && \
   gh release create $VER --generate-notes && \
-  gh pr list --state merged --json url -q '.[].url' | xargs linear_move "Release Candidate" "In Production"
+  gh pr list --state merged --json url -q '.[].url' | xargs linear_move "Release Candidate" "In production"
 }
 
-function msub() {
-  # Automatic repo release and tag, respecting gitflow + trusk patterns.
-
-  # Requires:
-  # - cg (https://www.npmjs.com/package/corgit)
-  # - gh (https://github.com/cli/cli)
-
-  reset_branches && \
-  touch CHANGELOG.md && \
-  cg bump >/dev/null && \
-  VER=`get-version` && \
-  git add package* CHANGELOG.md && \
-  git stash save -q "msub $VER" && \
-  git checkout -q -b release/$VER develop && \
-  git stash pop -q && \
-  git add package* CHANGELOG.md && \
-  git commit -q -m "Feature(Version): bump to $VER" --no-verify && \
-  git push --no-progress -q -u origin >/dev/null 2>/dev/null && \
-  gh pr create -a @me -B master -t$(git rev-parse --abbrev-ref HEAD) -b '' --draft 2>/dev/null && \
-  gh pr list --state merged --json url -q '.[].url' | xargs linear_move "Acceptance Test" "Release Candidate"
-}
-
-function minfra() {
-  # Push repo tagged image to parent repo docker-compose (Helps for RC)
-  IMAGE=`pwd | rev | cut -d "/" -f 1 | rev`
-  reset_branches
-  git checkout -q master
-  VERSION=`get-version`
-  $SED -i -E "s/$IMAGE(.*):..*/$IMAGE\1:develop/g" ../docker-compose.fr.staging.yml
-  $SED -i -E "s/$IMAGE(.*):[0-9]+(\.[0-9]+){2}/$IMAGE\1:$VERSION/g" ../docker-compose.fr.production.yml
-  (cd .. && git add $IMAGE docker-compose.* && git commit -m "Feature(Submodule): bump $IMAGE@$VERSION" --no-verify)
-}
-
-function minfra_tmp() {
-  # Push repo current image to parent repo docker-compose (Helps for TMP Branch)
-  IMAGE=`pwd | rev | cut -d "/" -f 1 | rev`
-  VERSION=`git rev-parse --abbrev-ref HEAD | $SED "s/[^a-z0-9_]/-/ig"`
-  update_parent_compose2 $IMAGE $VERSION
-  $SED -i -E "s/$IMAGE(.*):develop/$IMAGE\1:$VERSION/g" ../docker-compose.fr.staging.yml
-  #$SED -i -E "s/$IMAGE(.*):[0-9]+(\.[0-9]+){2}/$IMAGE\1:$VERSION/g" ../docker-compose.fr.production.yml
-  (cd .. && git add $IMAGE docker-compose.* && git commit -m "TMP(Submodule): bump $IMAGE@$VERSION" --no-verify)
-}
-
-function release_candidate() {
-  # Automatic release_candidate creation
-  # Only-run while being in a monorepo (not a submodule)
-
-  # Optional command (Will prevent husky warnings):
-  # git submodule -q foreach 'npm install --silent && git restore -q package-lock.json'
-  setopt LOCAL_OPTIONS NO_NOTIFY
-
-  if [[ $(git rev-parse --abbrev-ref HEAD) != *"release"* ]]; then
-    reset_branches
-    CURRENT_VER=$(git describe --tags --abbrev=0)
-    read "VER?New version for $(basename $(pwd)) (current: $CURRENT_VER) ? "
-    git checkout -b release/$VER
-    npm version -no-git-tag-version $(git rev-parse --abbrev-ref HEAD | cut -d '/' -f2) >/dev/null
-    git add package*
-    git commit -m "Feature(Version): bump version to $(git rev-parse --abbrev-ref HEAD | cut -d '/' -f2)" --no-verify
-  else
-    VER=$(git rev-parse --abbrev-ref HEAD | cut -d '/' -f2)
-  fi
-
-  TO_BUMP=$(mktemp)
-  LINEAR_ISSUES=$(mktemp)
-  echo "Linear issues:" > $LINEAR_ISSUES
-
-  for DIR in $(git submodule -q foreach -q sh -c pwd); do
-  (
-    cd $DIR
-    git checkout -q develop 2>/dev/null
-    git fetch -q
-    git rebase -q origin/develop 2>/dev/null
-    git show -q --summary HEAD | grep -q ^Merge || \
-    (
-      msub >> $LINEAR_ISSUES && echo $DIR >> $TO_BUMP && \
-    )
-  ) || echo "error on $(basename $DIR) - no action done (Possible local changes)" &
-  done
-  wait
-
-  while read BUMP; do
-    (cd $BUMP && minfra_tmp)
-  done < $TO_BUMP
-  rm $TO_BUMP
-
-  cat $LINEAR_ISSUES
-  rm $LINEAR_ISSUES
-
-  git push --no-progress -q -u origin >/dev/null 2>/dev/null
-  gh pr create -a @me -t $(git rev-parse --abbrev-ref HEAD) -b '' --draft 2>/dev/null
-}
-
+HUSKY=0
 alias trusk-mongo='dc exec mongo-db mongo trusk'
 alias trusk-redis='dc exec redis-server redis-cli'
 alias trusk-pgres='dc exec postgres-db psql -U postgres'
+alias start-staging='gcloud --project trusk-playground compute instances start'
